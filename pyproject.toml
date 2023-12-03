@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "UliSerial"
+version = "0.1.0"
+description = "Serial port utilities to save time with your electronics projects"
+authors = ["Uli Köhler <github@techoverflow.net>"]
+license = "Apache License v2.0"
+readme = "README.md"
+packages = [
+    { include = "UliSerial" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.5"
+pyserial = "^3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
