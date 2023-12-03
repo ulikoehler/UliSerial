@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import serial.tools.list_ports
+from .Exceptions import NoSuchSerialPortException, MultipleSerialPortsException
 
 __all__ = ['find_serial_ports', 'find_serial_port', 'serial_port_info']
 
@@ -38,6 +39,7 @@ def find_serial_ports(**kwargs):
 
     return matching_ports
 
+
 def find_serial_port(**kwargs):
     """
     Find a single serial port that matches given criteria.
@@ -54,7 +56,8 @@ def find_serial_port(**kwargs):
     str: The name of the single port that matches the criteria.
 
     Raises:
-    ValueError: If no ports or more than one port match the criteria.
+    NoSuchSerialPortException: If no ports match the criteria.
+    MultipleSerialPortsException: If more than one port match the criteria.
 
     Example:
     >>> find_port(hwid='USB VID:PID=2341:0043')
@@ -65,9 +68,9 @@ def find_serial_port(**kwargs):
     if len(matching_ports) == 1:
         return matching_ports[0]
     elif len(matching_ports) > 1:
-        raise ValueError("More than one port found matching the criteria.")
+        raise MultipleSerialPortsException("More than one port found matching the criteria.")
     else:
-        raise ValueError("No ports found matching the criteria.")
+        raise NoSuchSerialPortException("No ports found matching the criteria.")
 
 def serial_port_info(port_name):
     """

@@ -9,7 +9,8 @@ pip install UliSerial
 
 ## Example usage
 
-This code finds & opens a specific serial port using `pyserial`
+This code finds & opens a specific serial port using `pyserial`.
+If no port, or multiple ports are found, `NoSuchSerialPortException` or `MultipleSerialPortsException` is raised (both subclasses of `UliSerialException`).
 
 ```python
 from UliSerial.Find import *
