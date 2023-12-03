@@ -1,6 +1,12 @@
 # UliSerial
 Serial port utilities to save time with your electronics project
 
+## Installation
+
+```bash
+pip install UliSerial
+```
+
 ## Example usage
 
 This code finds & opens a specific serial port using `pyserial`
