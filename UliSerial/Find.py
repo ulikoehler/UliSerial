@@ -96,7 +96,7 @@ def serial_port_info(port_name):
     for port in ports:
         if port.device == port_name:
             port_info = {attr: getattr(port, attr) for attr in dir(port) if not attr.startswith('__') and not callable(getattr(port, attr))}
-            print(port_info)
-            return
-
-    print(f"No information found for port: {port_name}")
+            return port_info
+    
+    # No information found for the specified port
+    return None
