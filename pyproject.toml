@@ -6,8 +6,7 @@ authors = ["Uli Köhler <github@techoverflow.net>"]
 license = "Apache License v2.0"
 readme = "README.md"
 packages = [
-    { include = "UliSerial" }
-    { include = "UliSerial.Printer3D" }
+    { include = "UliSerial/**/*.py" }
 ]
 
 [tool.poetry.dependencies]
