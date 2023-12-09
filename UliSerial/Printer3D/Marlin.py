@@ -12,6 +12,14 @@ Temperature = namedtuple("Temperature", ["timestamp", "actual", "setpoint"])
 Position = namedtuple("Position", ["timestamp", "value", "steps"])
 Report = namedtuple("Report", ["timestamp", "line"])
 
+__all__ = [
+    "Temperature",
+    "Position",
+    "Report",
+    "MarlinProtocol",
+    "MarlinPrinterThread",
+]
+
 class MarlinProtocol(serial.threaded.LineReader):
     """
     Implements basic features for a serial protocol for Marlin printers
@@ -33,7 +41,7 @@ class MarlinProtocol(serial.threaded.LineReader):
         Stop the event processing thread, abort pending commands, if any.
         """
         self.alive = False
-        self.events.put(None)
+        #self.events.put(None)
         self.responses.put('<exit>')
     
     def handle_line(self, line):
