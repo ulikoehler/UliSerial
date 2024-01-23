@@ -8,7 +8,7 @@ from collections import namedtuple
 from typing import Dict
 
 # NOTE: setpoint may be None
-Temperature = namedtuple("Temperature", ["timestamp", "actual", "setpoint"])
+Temperature = namedtuple("Temperature", ["timestamp", "actual", "setpoint", "pwm"])
 Position = namedtuple("Position", ["timestamp", "value", "steps"])
 Report = namedtuple("Report", ["timestamp", "line"])
 
@@ -30,6 +30,7 @@ class MarlinProtocol(serial.threaded.LineReader):
     def __init__(self):
         super().__init__()
         self.responses = queue.Queue(32768)
+        self.response_lines = []
         # Last temperatures as reported by the printer. Key is "T", "B" etc - whatever the printer reports
         self.temperatures: Dict[str, Temperature] = {}
         self.positions: Dict[str, Position] = {}
@@ -53,13 +54,18 @@ class MarlinProtocol(serial.threaded.LineReader):
             return
         try:
             if line.startswith("ok"):
-                self.responses.put(line)
+                if self.response_lines:
+                    self.responses.put("\n".join(self.response_lines))
+                    self.response_lines = []
+                else: # Single line response
+                    self.responses.put(line)
             elif line.startswith("T"):
                 self.parse_temperature_report(line)
             elif line.startswith("X"):
                 positions = self.parse_position_report(line)
             else:
-                print("Unknown line from printer: ", line)
+                self.response_lines.append(line)
+                #print("Unknown line from printer: ", line)
         except:
             traceback.print_exc()
             print("Error parsing line from printer: ", line)
@@ -117,11 +123,11 @@ class MarlinProtocol(serial.threaded.LineReader):
         # Set raw data
         self.last_temperature_report = Report(t, line)
         # Extract the individual temperatures
-        for part in parts:
+        for part in parts: # Each part is e.g. "T:20.38" or "T:20.38/185.00"
             # part is e.g. "T:20.38" or "T:20.38/185.00"
             label, value = part.partition(":")[::2]
             if "@" in label:
-                # This is the PWM setpoint, which we currently ignore
+                print("PWM value: ", value)
                 continue
             # With or without setpoint
             if "/" in value:
